@@ -1,1 +1,1 @@
-# Boxify
+# Boxify applikáció
