@@ -22,7 +22,6 @@ module.exports = (sequelize) => {
         labelType: {
             type: DataTypes.ENUM('QR', 'BARCODE'),
             allowNull: false,
-            unique: true
         },
 
 
