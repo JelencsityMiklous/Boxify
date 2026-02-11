@@ -1,0 +1,38 @@
+### get all users
+GET http://localhost:4000/users
+Content-Type: application/json
+
+
+### register
+
+POST http://localhost:4000/users/register
+Content-Type: application/json
+
+{
+    "name": "Teszt",
+    "email": "teszt@teszt.hu",
+    "password": "teszt",
+    "confirm": "teszt"
+}
+
+### UPDATE
+
+PATCH http://localhost:4000/users/71c2a4e5-ab6b-462b-a697-b2755d48fbc9
+Content-Type: application/json
+
+{
+    "name": "Teszt",
+    "email": "teszt@teszt.hu",
+    "password": "newpassword123",
+}
+
+### login 
+
+POST http://localhost:4000/users/login
+Content-Type: application/json
+
+{
+    "email": "teszt@teszt.hu",
+    "password": "teszt"
+}
+
