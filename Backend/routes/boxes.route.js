@@ -1,4 +1,4 @@
-const { Box, operatorMap } = require('../models/index');
+const { Box } = require('../models/index');
 const router = require('express').Router();const { generateToken, authenticate } = require('../middlewares/auth.middleware');
 
 router.get('/', async (_req, res) => {
