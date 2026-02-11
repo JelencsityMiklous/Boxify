@@ -1,5 +1,5 @@
-const app = require('./Backend/config/app');
-const {sequelize} = require('./Backend/models/index');
+const app = require('./config/app');
+const {sequelize} = require('./models/index');
 
 const PORT = process.env.PORT;
 
