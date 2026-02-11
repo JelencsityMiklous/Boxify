@@ -3,40 +3,36 @@ const bcrypt = require('bcrypt')
 const {v4: uuid4} = require('uuid');
 
 module.exports = (sequelize) => {
-    const User = sequelize.define('users', {
+    const BoxItems = sequelize.define('box_items', {
         id: {
             type: DataTypes.UUID,
             defaultValue: DataTypes.UUIDV4,
             primaryKey: true
         },
-        name:{
-            type: DataTypes.STRING(100),
+
+        boxId: {
+            type: DataTypes.UUID,
+            allowNull: false,
+            foreignKey: true
+        },
+        itemId: {
+            type: DataTypes.UUID,
+            allowNull: false,
+            foreignKey: true
+        },
+
+        quantity:{
+            type: DataTypes.INTEGER,
+            defaultValue: 1,
             allowNull: false,
         },
-        email: {
-            type: DataTypes.STRING(100),
-            allowNull: false,
-            unique: true
-        },
-        password: {
-            type: DataTypes.STRING(64),
-            allowNull: false
-        },
-        role: {
-            type: DataTypes.STRING(20),
-            allowNull: false,
-            defaultValue: 'user'
-        },
+        /*
         secret: {
             type: DataTypes.UUID,
             allowNull: false,
             defaultValue: DataTypes.UUIDV4
-        },
-        status: {
-            type: DataTypes.BOOLEAN,
-            allowNull: false,
-            defaultValue: true
-        },
+        },*/
+
         createdAt: {
             type: DataTypes.DATE,
             allowNull: false,
@@ -46,26 +42,25 @@ module.exports = (sequelize) => {
             type: DataTypes.DATE,
             allowNull: true
         },
-        lastLoginAt: {
-            type: DataTypes.DATE,
-            allowNull: true
-        }
         
 
     },
     {
         timestamps: true,
-        hooks: {
-            beforeCreate: async (user, options) => {
-                user.password = await bcrypt.hash(user.password, 10);
+        
+        /*hooks: {
+
+            beforeCreate: async (box, options) => {
+                box.password = await bcrypt.hash(box.password, 10);
             },
-            beforeUpdate: async (user) => {
-                if (user.changed('password')) {
-                    user.password = await bcrypt.hash(user.password, 10);
-                    user.secret = uuid4();
+            beforeUpdate: async (box) => {
+                if (box.changed('password')) {
+                    box.password = await bcrypt.hash(box.password, 10);
+                    box.secret = uuid4();
                 }
             }
         },
+        
         defaultScope: {
             attributes: { exclude: ['password', 'secret'] }
         },
@@ -74,13 +69,14 @@ module.exports = (sequelize) => {
                 attributes: { include: ['password', 'secret'] }
             }
         }
+            */
 
     });
 
     // add instance method after model initialization
-    User.prototype.comparePassword = async function (password) {
+    BoxItems.prototype.comparePassword = async function (password) {
         return await bcrypt.compare(password, this.getDataValue('password'));
     };
 
-    return User;
+    return BoxItems;
 };

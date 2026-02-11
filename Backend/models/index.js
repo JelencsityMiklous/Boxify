@@ -15,8 +15,9 @@ const sequelize = new Sequelize(
 });
 
 const User = require('./user.model')(sequelize);
-
-/*const Box = require('./box.model')(sequelize);*/
+const Box = require('./boxes.model')(sequelize);
+const Items = require('./items.model')(sequelize);
+const BoxItems = require('./boxItems.model')(sequelize);
 
         const operatorMap ={
             eq: Op.eq,
@@ -32,6 +33,8 @@ const User = require('./user.model')(sequelize);
 module.exports = {
     sequelize,
     User,
-    /*Box,*/
+    Box,
+    Items,
+    BoxItems,
     operatorMap
 };
