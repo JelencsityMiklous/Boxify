@@ -1,0 +1,35 @@
+@import "primeng/resources/themes/lara-light-blue/theme.css";
+@import "primeng/resources/primeng.min.css";
+@import "primeicons/primeicons.css";
+
+:root {
+  --bg: #f8fafc;
+  --panel: #ffffff;
+  --border: #e5e7eb;
+  --text: #111827;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+a { color: inherit; }
+
+.page-title {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0 0 14px 0;
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
