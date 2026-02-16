@@ -270,7 +270,17 @@ export class BoxesPage {
 
   save() {
     if (this.form.invalid) return;
-    const payload = this.form.getRawValue();
+    const v = this.form.getRawValue();
+const payload = {
+  code: v.code ?? undefined,
+  location: v.location ?? undefined,
+  lengthCm: v.lengthCm ?? undefined,
+  widthCm: v.widthCm ?? undefined,
+  heightCm: v.heightCm ?? undefined,
+  maxWeightKg: v.maxWeightKg ?? undefined,
+  status: v.status ?? undefined,
+};
+
     this.saving = true;
 
     const req = this.editMode === 'create'

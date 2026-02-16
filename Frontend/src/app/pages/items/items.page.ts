@@ -177,7 +177,17 @@ export class ItemsPage {
 
   save() {
     if (this.form.invalid) return;
-    const payload = this.form.getRawValue();
+    const v = this.form.getRawValue();
+const payload = {
+  name: v.name ?? undefined,
+  category: v.category ?? undefined,
+  description: v.description ?? undefined,
+  lengthCm: v.lengthCm ?? undefined,
+  widthCm: v.widthCm ?? undefined,
+  heightCm: v.heightCm ?? undefined,
+  weightKg: v.weightKg ?? undefined,
+};
+
     this.saving = true;
 
     const req = this.editMode === 'create'
