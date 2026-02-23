@@ -1,6 +1,6 @@
-const {DataTypes} = require('sequelize');
-const bcrypt = require('bcrypt')
-const {v4: uuid4} = require('uuid');
+const { DataTypes } = require('sequelize');
+const bcrypt = require('bcrypt');
+const { v4: uuid4 } = require('uuid');
 
 module.exports = (sequelize) => {
     const User = sequelize.define('users', {
@@ -9,7 +9,7 @@ module.exports = (sequelize) => {
             defaultValue: DataTypes.UUIDV4,
             primaryKey: true
         },
-        name:{
+        name: {
             type: DataTypes.STRING(100),
             allowNull: false,
         },
@@ -19,7 +19,7 @@ module.exports = (sequelize) => {
             unique: true
         },
         password: {
-            type: DataTypes.STRING(64),
+            type: DataTypes.STRING(255),
             allowNull: false
         },
         role: {
@@ -50,13 +50,10 @@ module.exports = (sequelize) => {
             type: DataTypes.DATE,
             allowNull: true
         }
-        
-
-    },
-    {
+    }, {
         timestamps: true,
         hooks: {
-            beforeCreate: async (user, options) => {
+            beforeCreate: async (user) => {
                 user.password = await bcrypt.hash(user.password, 10);
             },
             beforeUpdate: async (user) => {
@@ -71,13 +68,11 @@ module.exports = (sequelize) => {
         },
         scopes: {
             withPassword: {
-                attributes: { include: ['password', 'secret'] }
+                attributes: { exclude: [] }  // minden mező visszajön, jelszóval együtt
             }
         }
-
     });
 
-    // add instance method after model initialization
     User.prototype.comparePassword = async function (password) {
         return await bcrypt.compare(password, this.getDataValue('password'));
     };

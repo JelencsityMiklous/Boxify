@@ -51,12 +51,10 @@ import { Box, BoxContents } from '../../models/models';
               {{ box.status === 'ACTIVE' ? 'Aktív' : box.status === 'ARCHIVED' ? 'Archív' : 'Sérült' }}
             </span>
           </div>
-          <div class="box-name">{{ box.name }}</div>
           <div class="box-location muted"> {{ box.location || '–' }}</div>
           <div class="box-dims mono">
              {{ box.lengthCm }}×{{ box.widthCm }}×{{ box.heightCm }} cm &nbsp;|&nbsp;
-             max {{ box.maxWeightKg }} kg &nbsp;|&nbsp;
-             {{ box.itemCount }} tárgy
+             max {{ box.maxWeightKg }} kg
           </div>
           <div class="box-fills" *ngIf="box.fill">
             <div class="fill-bar-wrap">
@@ -75,11 +73,20 @@ import { Box, BoxContents } from '../../models/models';
     </div>
 
     <!-- CREATE/EDIT DIALOG -->
-    <p-dialog [(visible)]="showForm" [modal]="true" [header]="editId ? ' Doboz szerkesztése' : '📦 Új doboz'" [style]="{width:'480px'}">
+    <p-dialog [(visible)]="showForm" [modal]="true" [header]="editId ? '✏️ Doboz szerkesztése' : '📦 Új doboz'" [style]="{width:'480px'}">
       <form [formGroup]="form" (ngSubmit)="save()">
-        <div class="form-group">
-          <label class="form-label">Elnevezés *</label>
-          <input pInputText formControlName="name" placeholder="pl. Nappali polc A" class="w-full"/>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Kód *</label>
+            <input pInputText formControlName="code" placeholder="pl. BOX-001" class="w-full"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Címke típus *</label>
+            <select class="filter-select w-full" formControlName="labelType">
+              <option value="QR">QR</option>
+              <option value="BARCODE">Barcode</option>
+            </select>
+          </div>
         </div>
         <div class="form-row">
           <div class="form-group"><label class="form-label">Hossz (cm) *</label><input pInputText type="number" formControlName="lengthCm" placeholder="60" class="w-full"/></div>
@@ -89,6 +96,14 @@ import { Box, BoxContents } from '../../models/models';
         <div class="form-group">
           <label class="form-label">Max. teherbírás (kg) *</label>
           <input pInputText type="number" formControlName="maxWeightKg" placeholder="20" class="w-full"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Státusz *</label>
+          <select class="filter-select w-full" formControlName="status">
+            <option value="ACTIVE">Aktív</option>
+            <option value="ARCHIVED">Archivált</option>
+            <option value="DAMAGED">Sérült</option>
+          </select>
         </div>
         <div class="form-group">
           <label class="form-label">Helyszín</label>
@@ -106,7 +121,7 @@ import { Box, BoxContents } from '../../models/models';
     </p-dialog>
 
     <!-- DETAIL DIALOG -->
-    <p-dialog [(visible)]="showDetail" [modal]="true" [header]="detailBox?.code + ' – ' + detailBox?.name" [style]="{width:'540px'}">
+    <p-dialog [(visible)]="showDetail" [modal]="true" [header]="(detailBox?.code || '') + ' részletek'" [style]="{width:'540px'}">
       <div *ngIf="detailBox && detailBox.fill" class="detail-fills">
         <div class="fill-stat">
           <div class="fill-stat-label mono">TÉRFOGAT</div>
@@ -133,7 +148,7 @@ import { Box, BoxContents } from '../../models/models';
       <div *ngFor="let item of contents?.items" class="content-item">
         <div class="content-item-info">
           <div style="font-weight:500;">{{ item.name }}</div>
-          <div class="muted mono" style="font-size:11px;">{{ item.lengthCm }}×{{ item.widthCm }}×{{ item.heightCm }} cm · {{ item.weightKg }} kg · qty: {{ item.quantity }}</div>
+          <div class="muted mono" style="font-size:11px;">{{ item.lengthCm }}×{{ item.widthCm }}×{{ item.heightCm }} cm · {{ item.weightKg }} kg</div>
         </div>
         <button pButton label="Kivesz" class="p-button-danger p-button-sm" (click)="removeItem(item.boxItemId)"></button>
       </div>
@@ -156,7 +171,6 @@ import { Box, BoxContents } from '../../models/models';
       &:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,.3); }
     }
     .box-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
-    .box-name { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
     .box-location { font-size: 12px; margin-bottom: 16px; }
     .box-dims { font-size: 11px; margin-bottom: 14px; padding: 8px 10px; background: var(--surface2); border-radius: 6px; }
     .box-fills { display: flex; flex-direction: column; gap: 5px; }
@@ -195,11 +209,13 @@ export class BoxesComponent implements OnInit {
   contents: BoxContents | null = null;
 
   form = this.fb.group({
-    name: ['', Validators.required],
+    code: ['', Validators.required],
+    labelType: ['QR', Validators.required],
     lengthCm: [null as number | null, [Validators.required, Validators.min(1)]],
     widthCm: [null as number | null, [Validators.required, Validators.min(1)]],
     heightCm: [null as number | null, [Validators.required, Validators.min(1)]],
     maxWeightKg: [null as number | null, [Validators.required, Validators.min(0.1)]],
+    status: ['ACTIVE', Validators.required],
     location: [''],
     note: [''],
   });
@@ -216,15 +232,21 @@ export class BoxesComponent implements OnInit {
     });
   }
 
-  openCreate() { this.editId = null; this.form.reset(); this.showForm = true; }
+  openCreate() { this.editId = null; this.form.reset({ labelType: 'QR', status: 'ACTIVE' }); this.showForm = true; }
 
   startEdit() {
     if (!this.detailBox) return;
     this.editId = this.detailBox.id;
     this.form.patchValue({
-      name: this.detailBox.name, lengthCm: this.detailBox.lengthCm, widthCm: this.detailBox.widthCm,
-      heightCm: this.detailBox.heightCm, maxWeightKg: this.detailBox.maxWeightKg,
-      location: this.detailBox.location || '', note: this.detailBox.note || '',
+      code: this.detailBox.code,
+      labelType: this.detailBox.labelType,
+      lengthCm: this.detailBox.lengthCm,
+      widthCm: this.detailBox.widthCm,
+      heightCm: this.detailBox.heightCm,
+      maxWeightKg: this.detailBox.maxWeightKg,
+      status: this.detailBox.status,
+      location: this.detailBox.location || '',
+      note: this.detailBox.note || '',
     });
     this.showDetail = false;
     this.showForm = true;
@@ -253,7 +275,6 @@ export class BoxesComponent implements OnInit {
   }
 
   removeItem(boxItemId: string) {
-    // Re-load contents after removal via packing remove endpoint
     if (!this.detailBox) return;
     this.openDetail(this.detailBox);
     this.msg.add({ severity: 'info', summary: '', detail: 'Tárgy kivéve' });
