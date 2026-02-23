@@ -1,8 +1,22 @@
-const router = require('express').Router();const { generateToken, authenticate } = require('../middlewares/auth.middleware');
-const { Boxes, Items, BoxItems } = require('../models');
+const router = require('express').Router();
+const { authenticate } = require('../middlewares/auth.middleware');
+const { Box, Item, BoxItem } = require('../models');
+const packingService = require('../services/packing.service');
 
+router.post('/can-fit', authenticate, async (req, res) => {
+    try {
+        const { boxId, itemId, quantity } = req.body;
+        if (!boxId || !itemId || quantity == null) {
+            return res.status(400).json({ canFit: false, reason: 'Missing boxId, itemId or quantity' });
+        }
+        const result = await packingService.canFit({ boxId, itemId, quantity });
+        return res.status(200).json({ canFit: result.ok, ok: result.ok, reasons: result.reasons });
+    } catch (err) {
+        return res.status(500).json({ canFit: false, reason: err.message });
+    }
+});
 
-router.post('/put', async (req, res) => {
+router.post('/put', authenticate, async (req, res) => {
     try {
         const { boxId, itemId, quantity } = req.body;
         if (!boxId || !itemId || quantity == null) {
@@ -14,88 +28,66 @@ router.post('/put', async (req, res) => {
             return res.status(400).json({ status: 'hiba', message: 'Invalid quantity' });
         }
 
-        const box = await Boxes.findByPk(boxId);
-        if (!box) return res.status(404).json({ status: 'hiba', message: 'Box not found' });
-
-        const item = await Items.findByPk(itemId);
-        if (!item) return res.status(404).json({ status: 'hiba', message: 'Item not found' });
-
-        const capacity = box.capacity ?? box.limit ?? box.max_capacity ?? box.maxCapacity;
-        if (capacity == null) {
-            return res.status(400).json({ status: 'hiba', message: 'Box capacity not defined' });
+        const fitResult = await packingService.canFit({ boxId, itemId, quantity: qty });
+        if (!fitResult.ok) {
+            return res.status(400).json({ ok: false, status: 'hiba', reasons: fitResult.reasons });
         }
 
-        const currentQty = (await BoxItems.sum('quantity', { where: { boxId } })) || 0;
-        const newTotal = currentQty + qty;
-
-        if (newTotal > capacity) {
-            return res.status(400).json({
-                status: 'hiba',
-                reason: 'limit',
-                capacity,
-                current: currentQty,
-                wouldBe: newTotal
-            });
-        }
-
-        const existing = await BoxItems.findOne({ where: { boxId, itemId } });
+        const existing = await BoxItem.findOne({ where: { boxId, itemId } });
         if (existing) {
             existing.quantity += qty;
             await existing.save();
         } else {
-            await BoxItems.create({ boxId, itemId, quantity: qty });
+            await BoxItem.create({ boxId, itemId, quantity: qty });
         }
 
-        return res.status(200).json({
-            status: 'ok',   
-            capacity,
-            current: newTotal
-        });
+        const stats = await packingService.computeBoxStats(boxId);
+        return res.status(200).json({ ok: true, status: 'ok', fill: stats });
     } catch (err) {
         return res.status(500).json({ status: 'hiba', message: err.message });
     }
 });
 
-
-
-router.post('/can-fit', async (req, res) => {
+router.delete('/remove', authenticate, async (req, res) => {
     try {
-        const { boxId, itemId, quantity } = req.body;
-        if (!boxId || !itemId || quantity == null) {
-            return res.status(400).json({ canFit: false, reason: 'Missing boxId, itemId or quantity' });
+        const { boxId, itemId } = req.body;
+        if (!boxId || !itemId) {
+            return res.status(400).json({ status: 'hiba', message: 'Missing boxId or itemId' });
         }
 
-        const qty = parseInt(quantity, 10);
-        if (isNaN(qty) || qty <= 0) {
-            return res.status(400).json({ canFit: false, reason: 'Invalid quantity' });
-        }
+        const existing = await BoxItem.findOne({ where: { boxId, itemId } });
+        if (!existing) return res.status(404).json({ status: 'hiba', message: 'Not found' });
 
-        const box = await Boxes.findByPk(boxId);
-        if (!box) return res.status(404).json({ canFit: false, reason: 'Box not found' });
-
-        const item = await Items.findByPk(itemId);
-        if (!item) return res.status(404).json({ canFit: false, reason: 'Item not found' });
-
-        const capacity = box.capacity ?? box.limit ?? box.max_capacity ?? box.maxCapacity;
-        if (capacity == null) {
-            return res.status(400).json({ canFit: false, reason: 'Box capacity not defined' });
-        }
-
-        const currentQty = (await BoxItems.sum('quantity', { where: { boxId } })) || 0;
-        const newTotal = currentQty + qty;
-        const fits = newTotal <= capacity;
-
-        return res.status(200).json({
-            canFit: fits,
-            reason: fits ? 'Fits' : 'Exceeds capacity',
-            capacity,
-            current: currentQty,
-            wouldBe: newTotal
-        });
+        await existing.destroy();
+        const stats = await packingService.computeBoxStats(boxId);
+        return res.status(200).json({ ok: true, status: 'ok', fill: stats });
     } catch (err) {
-        return res.status(500).json({ canFit: false, reason: err.message });
+        return res.status(500).json({ status: 'hiba', message: err.message });
     }
 });
 
+router.get('/recommend/:itemId', authenticate, async (req, res) => {
+    try {
+        const { itemId } = req.params;
+        const quantity = parseInt(req.query.quantity || '1', 10);
+
+        const item = await Item.findByPk(itemId);
+        if (!item) return res.status(404).json({ message: 'Item not found' });
+
+        const boxes = await Box.findAll({ where: { userId: req.user.id, status: 'ACTIVE' } });
+        const results = [];
+
+        for (const box of boxes) {
+            const result = await packingService.canFit({ boxId: box.id, itemId, quantity });
+            if (result.ok) {
+                results.push({ box, fill: result.statsAfter });
+            }
+        }
+
+        return res.status(200).json(results);
+    } catch (err) {
+        return res.status(500).json({ message: err.message });
+    }
+});
 
 module.exports = router;
