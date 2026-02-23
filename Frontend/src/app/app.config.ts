@@ -1,13 +1,14 @@
 import { ApplicationConfig } from '@angular/core';
-import { providePrimeNG } from 'primeng/config';
-import Lara from '@primeuix/themes/lara';
+import { provideRouter } from '@angular/router';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideAnimations } from '@angular/platform-browser/animations';
+import { routes } from './app.routes';
+import { authInterceptor } from './services/auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    providePrimeNG({
-      theme: {
-        preset: Lara
-      }
-    })
-  ]
+    provideRouter(routes),
+    provideHttpClient(withInterceptors([authInterceptor])),
+    provideAnimations(),
+  ],
 };

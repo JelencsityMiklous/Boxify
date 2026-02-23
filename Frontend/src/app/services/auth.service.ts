@@ -1,47 +1,62 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../environments/environment';
+import { Router } from '@angular/router';
 import { tap } from 'rxjs/operators';
-
-export interface LoginResponse {
-  token: string;
-  user?: any;
-}
+import { environment } from '../../environments/environment';
+import { User } from '../models/models';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private readonly tokenKey = 'boxify_token';
+  private api = `${environment.apiUrl}/auth`;
+  currentUser = signal<User | null>(null);
 
-  constructor(private http: HttpClient) {}
-
-  get token(): string | null {
-    return localStorage.getItem(this.tokenKey);
+  constructor(private http: HttpClient, private router: Router) {
+    const stored = localStorage.getItem('user');
+    if (stored) this.currentUser.set(JSON.parse(stored));
   }
 
-  set token(value: string | null) {
-    if (value) localStorage.setItem(this.tokenKey, value);
-    else localStorage.removeItem(this.tokenKey);
+  register(data: { name: string; email: string; password: string }) {
+    return this.http.post<{ token: string; user: User }>(`${this.api}/register`, data).pipe(
+      tap(res => this.saveSession(res))
+    );
   }
 
-  isLoggedIn(): boolean {
-    return !!this.token;
+  login(data: { email: string; password: string }) {
+    return this.http.post<{ token: string; user: User }>(`${this.api}/login`, data).pipe(
+      tap(res => this.saveSession(res))
+    );
   }
 
-  logout(): void {
-    this.token = null;
+  forgotPassword(email: string) {
+    return this.http.post(`${this.api}/forgot-password`, { email });
   }
 
-  register(payload: { name: string; email: string; password: string; confirm?: string }) {
-    return this.http.post(`${environment.apiBaseUrl}/auth/register`, payload);
+  resetPassword(token: string, password: string) {
+    return this.http.post(`${this.api}/reset-password`, { token, password });
   }
 
-  login(payload: { email: string; password: string }) {
-    return this.http
-      .post<LoginResponse>(`${environment.apiBaseUrl}/auth/login`, payload)
-      .pipe(tap(r => (this.token = r.token)));
+  verifyEmail(token: string) {
+    return this.http.post(`${this.api}/verify-email`, { token });
   }
 
-  me() {
-    return this.http.get(`${environment.apiBaseUrl}/auth/me`);
+  logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    this.currentUser.set(null);
+    this.router.navigate(['/login']);
+  }
+
+  getToken() {
+    return localStorage.getItem('token');
+  }
+
+  isLoggedIn() {
+    return !!this.getToken();
+  }
+
+  private saveSession(res: { token: string; user: User }) {
+    localStorage.setItem('token', res.token);
+    localStorage.setItem('user', JSON.stringify(res.user));
+    this.currentUser.set(res.user);
   }
 }

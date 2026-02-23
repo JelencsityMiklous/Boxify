@@ -1,34 +1,187 @@
-
-
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap');
 
 :root {
-  --bg: #f8fafc;
-  --panel: #ffffff;
-  --border: #e5e7eb;
-  --text: #111827;
+  --bg: #0f0f11;
+  --surface: #18181c;
+  --surface2: #222228;
+  --border: #2e2e38;
+  --accent: #e8ff47;
+  --accent2: #ff6b35;
+  --accent3: #4dffb4;
+  --text: #f0f0f0;
+  --text-muted: #888;
+  --text-dim: #555;
+  --radius: 12px;
+  --font-mono: 'Space Mono', monospace;
+  --font-sans: 'DM Sans', sans-serif;
 }
 
-html, body {
-  height: 100%;
-}
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  margin: 0;
+  font-family: var(--font-sans);
   background: var(--bg);
   color: var(--text);
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  min-height: 100vh;
 }
 
-a { color: inherit; }
+// ── PrimeNG overrides ────────────────────────────────────────────────────
+.p-component { font-family: var(--font-sans) !important; }
 
-.page-title {
-  font-size: 22px;
-  font-weight: 700;
-  margin: 0 0 14px 0;
+.p-dialog {
+  background: var(--surface) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 16px !important;
+  .p-dialog-header {
+    background: var(--surface) !important;
+    color: var(--text) !important;
+    border-bottom: 1px solid var(--border) !important;
+    border-radius: 16px 16px 0 0 !important;
+  }
+  .p-dialog-content {
+    background: var(--surface) !important;
+    color: var(--text) !important;
+  }
+  .p-dialog-footer {
+    background: var(--surface) !important;
+    border-top: 1px solid var(--border) !important;
+    border-radius: 0 0 16px 16px !important;
+  }
 }
 
-.card {
-  background: var(--panel);
+.p-inputtext, .p-dropdown, .p-inputnumber-input {
+  background: var(--surface2) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--text) !important;
+  border-radius: 8px !important;
+  font-family: var(--font-sans) !important;
+  &:focus { border-color: var(--accent) !important; box-shadow: none !important; }
+}
+
+.p-dropdown-panel {
+  background: var(--surface) !important;
+  border: 1px solid var(--border) !important;
+  .p-dropdown-item { color: var(--text) !important; &:hover { background: var(--surface2) !important; } }
+  .p-dropdown-item.p-highlight { background: rgba(232,255,71,0.1) !important; color: var(--accent) !important; }
+}
+
+.p-button {
+  font-family: var(--font-sans) !important;
+  font-weight: 600 !important;
+  border-radius: 8px !important;
+  transition: all 0.15s !important;
+}
+
+.p-button-primary, .p-button:not(.p-button-outlined):not(.p-button-text):not(.p-button-danger):not(.p-button-secondary) {
+  background: var(--accent) !important;
+  border-color: var(--accent) !important;
+  color: #000 !important;
+  &:hover { background: #d4e83d !important; border-color: #d4e83d !important; }
+}
+
+.p-button-outlined { border-color: var(--border) !important; color: var(--text-muted) !important; background: transparent !important; }
+.p-button-danger { background: rgba(255,80,80,0.12) !important; border-color: rgba(255,80,80,0.3) !important; color: #ff6b6b !important; }
+
+.p-datatable {
+  .p-datatable-thead > tr > th {
+    background: var(--surface) !important;
+    color: var(--text-muted) !important;
+    border-color: var(--border) !important;
+    font-family: var(--font-mono) !important;
+    font-size: 10px !important;
+    letter-spacing: 1px !important;
+    text-transform: uppercase !important;
+  }
+  .p-datatable-tbody > tr {
+    background: var(--surface) !important;
+    color: var(--text) !important;
+    > td { border-color: rgba(255,255,255,0.04) !important; }
+    &:hover > td { background: rgba(255,255,255,0.02) !important; }
+  }
+}
+
+.p-progressbar {
+  background: var(--surface2) !important;
+  border-radius: 3px !important;
+  height: 6px !important;
+  .p-progressbar-value { border-radius: 3px !important; }
+}
+
+.p-toast .p-toast-message {
+  background: var(--surface) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  color: var(--text) !important;
+  &.p-toast-message-success { border-left: 3px solid var(--accent3) !important; }
+  &.p-toast-message-error { border-left: 3px solid #ff6b6b !important; }
+  &.p-toast-message-info { border-left: 3px solid var(--accent) !important; }
+  .p-toast-message-text { color: var(--text) !important; }
+}
+
+.p-tag {
+  font-family: var(--font-mono) !important;
+  font-size: 10px !important;
+  border-radius: 4px !important;
+}
+
+// ── Utility classes ──────────────────────────────────────────────────────
+.bx-card {
+  background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.bx-card-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.bx-card-body { padding: 20px; }
+
+.mono { font-family: var(--font-mono); }
+.muted { color: var(--text-muted); }
+.accent { color: var(--accent); }
+.c-green { color: var(--accent3); }
+.c-orange { color: var(--accent2); }
+.c-red { color: #ff6b6b; }
+
+.box-code-badge {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--accent);
+  background: rgba(232,255,71,0.08);
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.status-badge {
+  font-size: 11px;
+  font-family: var(--font-mono);
+  padding: 2px 8px;
+  border-radius: 4px;
+  &.ACTIVE { background: rgba(77,255,180,0.1); color: var(--accent3); }
+  &.ARCHIVED { background: rgba(255,255,255,0.06); color: var(--text-muted); }
+  &.DAMAGED { background: rgba(255,80,80,0.1); color: #ff6b6b; }
+}
+
+.page-wrapper {
+  padding: 32px;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+
+.fill-bar-wrap {
+  display: flex; align-items: center; gap: 8px;
+  .fill-label { font-size: 10px; font-family: var(--font-mono); color: var(--text-dim); width: 30px; text-transform: uppercase; }
+  .fill-pct { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); width: 34px; text-align: right; }
 }
