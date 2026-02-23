@@ -1,0 +1,55 @@
+<div class="page-wrapper">
+      <div class="page-header">
+        <div>
+          <div class="page-title">🔍 Tárgy keresés</div>
+          <div class="page-sub muted">„Hol van ez a tárgy?" – gyors lokátor</div>
+        </div>
+      </div>
+
+      <div class="bx-card" style="margin-bottom:24px;">
+        <div class="bx-card-body">
+          <div class="search-wrap">
+            <span class="s-icon">🔍</span>
+            <input
+              type="text"
+              class="big-search"
+              placeholder="Tárgy neve, leírás, kategória…"
+              [(ngModel)]="query"
+              (input)="onSearch()"
+              autofocus
+            />
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="loading" class="empty-state">⏳ Keresés…</div>
+
+      <div *ngIf="!loading && searched && !results.length" class="empty-state">
+        <div style="font-size:40px;margin-bottom:12px;">🔍</div>
+        <div>Nincs találat: „{{ query }}"</div>
+      </div>
+
+      <div class="results">
+        <div class="result-card" *ngFor="let item of results">
+          <div class="result-icon">{{ getCatEmoji(item.category) }}</div>
+          <div class="result-info">
+            <div class="result-name">{{ item.name }}</div>
+            <div class="result-meta muted">
+              {{ item.category || 'Egyéb' }} &nbsp;·&nbsp;
+              <span class="mono">{{ item.lengthCm }}×{{ item.widthCm }}×{{ item.heightCm }} cm · {{ item.weightKg }} kg</span>
+            </div>
+            <div *ngIf="item.box" class="box-locator">
+              <span class="box-code-badge">{{ item.box.code }}</span>
+              <span style="font-size:13px;">{{ item.box.name }}</span>
+              <span class="muted" style="font-size:12px;">📍 {{ item.box.location }}</span>
+            </div>
+            <div *ngIf="!item.box" class="no-box">
+              ⚠️ Nincs dobozban pakolva
+            </div>
+          </div>
+          <div *ngIf="item.box">
+            <a [routerLink]="['/boxes']" class="to-box-btn">→ Dobozhoz</a>
+          </div>
+        </div>
+      </div>
+    </div>

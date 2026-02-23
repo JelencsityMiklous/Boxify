@@ -25,83 +25,10 @@ import { ItemDto, ItemService } from '../../services/item.service';
     FileUploadModule,
   ],
   template: `
-    <div class="header">
-      <h1 class="page-title">Items</h1>
-      <div class="actions">
-        <span class="p-input-icon-left">
-          <i class="pi pi-search"></i>
-          <input pInputText placeholder="Keresés név alapján" [(ngModel)]="search" (keyup.enter)="load()" />
-        </span>
-        <input pInputText placeholder="Kategória" [(ngModel)]="category" (keyup.enter)="load()" />
-        <button pButton icon="pi pi-plus" label="Új item" (click)="openCreate()"></button>
-      </div>
-    </div>
-
-    <div class="card" style="padding: 10px;">
-      <p-table [value]="items" [paginator]="true" [rows]="10" [rowHover]="true" [loading]="loading" selectionMode="single" (onRowSelect)="openEdit($event.data)">
-        <ng-template pTemplate="header">
-          <tr>
-            <th>Name</th>
-            <th>Category</th>
-            <th>Dims (cm)</th>
-            <th>Weight (kg)</th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-i>
-          <tr [pSelectableRow]="i">
-            <td><strong>{{ i.name }}</strong></td>
-            <td>{{ i.category || '-' }}</td>
-            <td>{{ i.lengthCm }}×{{ i.widthCm }}×{{ i.heightCm }}</td>
-            <td>{{ i.weightKg }}</td>
-          </tr>
-        </ng-template>
-      </p-table>
-    </div>
-
-    <p-dialog [(visible)]="editVisible" [modal]="true" [style]="{width:'560px'}" [header]="editMode==='create' ? 'Új item' : 'Item szerkesztés'">
-      <form [formGroup]="form" class="form">
-        <label>Név</label>
-        <input pInputText formControlName="name" />
-
-        <label>Kategória</label>
-        <input pInputText formControlName="category" />
-
-        <label>Leírás</label>
-        <input pInputText formControlName="description" />
-
-        <div class="grid3">
-          <div><label>Hossz</label><input pInputText type="number" formControlName="lengthCm" /></div>
-          <div><label>Szél</label><input pInputText type="number" formControlName="widthCm" /></div>
-          <div><label>Mag</label><input pInputText type="number" formControlName="heightCm" /></div>
-        </div>
-
-        <label>Súly (kg)</label>
-        <input pInputText type="number" formControlName="weightKg" />
-
-        <div class="upload" *ngIf="editMode==='edit'">
-          <div class="lbl">Kép feltöltés</div>
-          <p-fileUpload mode="basic" name="image" [auto]="true" chooseLabel="Fájl kiválasztása" (onSelect)="onFileSelect($event)" accept="image/*"></p-fileUpload>
-          <small class="hint">A backend /items/:id/upload-image endpointot hívja.</small>
-        </div>
-      </form>
-
-      <ng-template pTemplate="footer">
-        <button pButton label="Törlés" class="p-button-danger p-button-text" *ngIf="editMode==='edit'" (click)="remove()"></button>
-        <button pButton label="Mégse" class="p-button-text" (click)="editVisible=false"></button>
-        <button pButton label="Mentés" (click)="save()" [disabled]="form.invalid || saving"></button>
-      </ng-template>
-    </p-dialog>
-  `,
+    `,
   styles: [
     `
-    .header{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:12px;}
-    .actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
-    .form label{display:block;font-size:12px;color:#6b7280;margin:10px 0 6px;}
-    .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
-    @media (max-width: 700px){.grid3{grid-template-columns:1fr;}}
-    .upload{margin-top:12px;padding:10px;border:1px dashed var(--border);border-radius:12px;}
-    .lbl{font-size:12px;color:#6b7280;margin-bottom:6px;}
-    .hint{color:#9ca3af;}
+   
   `,
   ],
 })

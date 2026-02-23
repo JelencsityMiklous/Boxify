@@ -1,0 +1,73 @@
+
+    <div class="page-wrapper">
+      <!-- STATS -->
+      <div class="stats-grid">
+        <div class="stat-card" style="--ac: var(--accent)">
+          <div class="stat-label">Összes doboz</div>
+          <div class="stat-value">{{ stats?.totalBoxes ?? '–' }}</div>
+          <div class="stat-sub">{{ stats?.emptyBoxes }} üres · {{ stats?.activeBoxes }} aktív</div>
+        </div>
+        <div class="stat-card" style="--ac: var(--accent3)">
+          <div class="stat-label">Összes tárgy</div>
+          <div class="stat-value">{{ stats?.totalItems ?? '–' }}</div>
+          <div class="stat-sub">{{ stats?.categories?.length ?? 0 }} kategóriában</div>
+        </div>
+        <div class="stat-card" style="--ac: var(--accent2)">
+          <div class="stat-label">Foglalt súly</div>
+          <div class="stat-value">{{ stats?.totalUsedWeight ?? '–' }}<span class="stat-unit">kg</span></div>
+          <div class="stat-sub">{{ stats?.totalMaxWeight }} kg kapacitásból</div>
+        </div>
+        <div class="stat-card" style="--ac: #b47dff">
+          <div class="stat-icon">📊</div>
+          <div class="stat-label">Átl. telítettség</div>
+          <div class="stat-value">{{ stats?.avgVolumeFill ?? '–' }}<span class="stat-unit">%</span></div>
+          <div class="stat-sub">térfogat alapján</div>
+        </div>
+      </div>
+
+      <div class="content-grid">
+        <!-- TOP BOXES -->
+        <div class="bx-card">
+          <div class="bx-card-header">
+            <span> Legtelítettebb dobozok</span>
+            <a routerLink="/boxes" class="link-sm">Összes →</a>
+          </div>
+          <div class="bx-card-body">
+            <div *ngIf="loading" class="empty-state">Betöltés…</div>
+            <div *ngIf="!loading && !stats?.topBoxes?.length" class="empty-state">Még nincsenek dobozok</div>
+            <div *ngFor="let entry of stats?.topBoxes" class="fill-item">
+              <div class="fill-meta">
+                <div>
+                  <div class="fill-name">{{ entry.box.name }}</div>
+                  <div class="fill-code mono">{{ entry.box.code }}</div>
+                </div>
+                <div class="fill-pct" [class]="fillClass(entry.fill.volumeFillPercent)">
+                  {{ entry.fill.volumeFillPercent }}%
+                </div>
+              </div>
+              <p-progressBar
+                [value]="entry.fill.volumeFillPercent"
+                [showValue]="false"
+                [style]="{ height: '6px', background: 'var(--surface2)' }"
+                [styleClass]="'fill-pb-' + fillClass(entry.fill.volumeFillPercent)"
+              ></p-progressBar>
+            </div>
+          </div>
+        </div>
+
+        <!-- CATEGORIES -->
+        <div class="bx-card">
+          <div class="bx-card-header">
+            <span> Kategóriák</span>
+          </div>
+          <div class="bx-card-body">
+            <div *ngIf="!stats?.categories?.length" class="empty-state">Még nincsenek tárgyak</div>
+            <div *ngFor="let cat of stats?.categories; let i = index" class="cat-item">
+              <div class="cat-dot" [style.background]="catColors[i % catColors.length]"></div>
+              <div class="cat-name muted">{{ cat.name }}</div>
+              <div class="cat-count mono">{{ cat.count }} db</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>

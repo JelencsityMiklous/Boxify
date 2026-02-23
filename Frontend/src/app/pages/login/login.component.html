@@ -1,0 +1,62 @@
+<p-toast position="bottom-right"></p-toast>
+    <div class="login-wrap">
+      <div class="login-card">
+        <div class="login-logo">
+          <div class="login-logo-icon">📦</div>
+          <h1>Box<span>ify</span></h1>
+          <p>Raktározás okosan</p>
+        </div>
+
+        <!-- LOGIN -->
+        <form *ngIf="mode === 'login'" [formGroup]="loginForm" (ngSubmit)="doLogin()">
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input pInputText type="email" formControlName="email" placeholder="te@email.hu" class="form-input w-full"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Jelszó</label>
+            <input pInputText type="password" formControlName="password" placeholder="••••••••" class="form-input w-full"/>
+          </div>
+          <div class="forgot-link">
+            <a (click)="mode='forgot'">Elfelejtettem a jelszavam</a>
+          </div>
+          <button pButton type="submit" label="Bejelentkezés →" [loading]="loading" class="w-full mt-2"></button>
+          <div class="switch-link">
+            Nincs még fiókod? <a (click)="mode='register'">Regisztrálj!</a>
+          </div>
+        </form>
+
+        <!-- REGISTER -->
+        <form *ngIf="mode === 'register'" [formGroup]="registerForm" (ngSubmit)="doRegister()">
+          <div class="form-group">
+            <label class="form-label">Teljes név</label>
+            <input pInputText type="text" formControlName="name" placeholder="Kovács Péter" class="form-input w-full"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input pInputText type="email" formControlName="email" placeholder="te@email.hu" class="form-input w-full"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Jelszó (min. 8 karakter)</label>
+            <input pInputText type="password" formControlName="password" placeholder="••••••••" class="form-input w-full"/>
+          </div>
+          <button pButton type="submit" label="Regisztráció →" [loading]="loading" class="w-full mt-2"></button>
+          <div class="switch-link">
+            Már van fiókod? <a (click)="mode='login'">Lépj be!</a>
+          </div>
+        </form>
+
+        <!-- FORGOT -->
+        <form *ngIf="mode === 'forgot'" [formGroup]="forgotForm" (ngSubmit)="doForgot()">
+          <p class="forgot-desc">Add meg az email-ed és küldünk egy visszaállítási linket.</p>
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input pInputText type="email" formControlName="email" placeholder="te@email.hu" class="form-input w-full"/>
+          </div>
+          <button pButton type="submit" label="Link küldése →" [loading]="loading" class="w-full mt-2"></button>
+          <div class="switch-link">
+            <a (click)="mode='login'">← Vissza a belépéshez</a>
+          </div>
+        </form>
+      </div>
+    </div>

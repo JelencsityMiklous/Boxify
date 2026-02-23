@@ -1,0 +1,55 @@
+<div class="app-shell">
+      <!-- SIDEBAR -->
+      <aside class="sidebar">
+        <div class="logo">
+          <div class="logo-icon">📦</div>
+          <span class="logo-text">Box<span>ify</span></span>
+        </div>
+
+        <div class="nav-section-label">Navigáció</div>
+
+        <a class="nav-item" routerLink="/dashboard" routerLinkActive="active">
+           Dashboard
+        </a>
+        <a class="nav-item" routerLink="/boxes" routerLinkActive="active">
+           Dobozok
+        </a>
+        <a class="nav-item" routerLink="/items" routerLinkActive="active">
+           Tárgyak
+        </a>
+        <a class="nav-item" routerLink="/packing" routerLinkActive="active">
+           Pakolás
+        </a>
+        <a class="nav-item" routerLink="/search" routerLinkActive="active">
+          <span class="icon">🔍</span> Keresés
+        </a>
+
+        <div class="sidebar-bottom">
+          <div class="user-card">
+            <div class="user-avatar">{{ initials() }}</div>
+            <div>
+              <div class="user-name">{{ user()?.name }}</div>
+              <div class="user-role">{{ user()?.role }}</div>
+            </div>
+            <button class="logout-btn" (click)="logout()" title="Kilépés">⏻</button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- MAIN -->
+      <main class="main-content">
+        <!-- TOPBAR -->
+        <div class="topbar">
+          <div class="topbar-search">
+            <span class="search-icon">🔍</span>
+            <input
+              type="text"
+              placeholder="Gyors keresés…"
+              [(ngModel)]="searchQuery"
+              (keyup.enter)="doSearch()"
+            />
+          </div>
+        </div>
+        <router-outlet></router-outlet>
+      </main>
+    </div>
