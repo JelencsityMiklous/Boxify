@@ -1,5 +1,17 @@
 const jwt = require('jsonwebtoken');
 
+function generateToken(user) {
+  return jwt.sign(
+    {
+      id: user.id,
+      email: user.email,
+      role: user.role
+    },
+    process.env.JWT_SECRET,
+    { expiresIn: '1d' }
+  );
+}
+
 function requireAuth(req, res, next) {
   const header = req.headers.authorization || '';
   const token = header.startsWith('Bearer ') ? header.slice(7) : null;
@@ -7,7 +19,7 @@ function requireAuth(req, res, next) {
 
   try {
     const payload = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = payload; // { id, role, email }
+    req.user = payload;
     return next();
   } catch (err) {
     return res.status(401).json({ error: 'INVALID_TOKEN' });
@@ -20,4 +32,9 @@ function requireAdmin(req, res, next) {
   return next();
 }
 
-module.exports = { requireAuth, requireAdmin };
+module.exports = {
+  generateToken,
+  authenticate: requireAuth,
+  requireAuth,
+  requireAdmin
+};

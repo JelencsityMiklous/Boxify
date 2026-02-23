@@ -5,12 +5,12 @@ Content-Type: application/json
 
 ### register
 
-POST http://localhost:4000/users/register
+POST http://localhost:4000/api/auth/register
 Content-Type: application/json
 
 {
-    "name": "Teszt",
-    "email": "teszt@teszt.hu",
+    "name": "Tesztsadasda",
+    "email": "teszt@tesztasda.hu",
     "password": "teszt",
     "confirm": "teszt"
 }
@@ -28,11 +28,11 @@ Content-Type: application/json
 
 ### login 
 
-POST http://localhost:4000/users/login
+POST http://localhost:4000/api/auth/login 
 Content-Type: application/json
 
 {
-    "email": "teszt@teszt.hu",
+    "email": "teszt@teszt.aaahu",
     "password": "teszt"
 }
 
