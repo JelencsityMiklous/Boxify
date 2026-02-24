@@ -13,10 +13,8 @@ import { Item, Box, RecommendResult } from '../../models/models';
   standalone: true,
   imports: [CommonModule, FormsModule, ButtonModule, DropdownModule, ToastModule],
   providers: [MessageService],
-  template: `
-    `,
-  styles: [`
-   `],
+  templateUrl: './packing.component.html',
+  styleUrls: ['./packing.component.scss'],
 })
 export class PackingComponent implements OnInit {
   items: Item[] = [];

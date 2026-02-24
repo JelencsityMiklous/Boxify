@@ -15,12 +15,8 @@ type Mode = 'login' | 'register' | 'forgot';
   standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule, ButtonModule, InputTextModule, ToastModule],
   providers: [MessageService],
-  template: `
-    
-  `,
-  styles: [`
-    
-  `],
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent {
   mode: Mode = 'login';

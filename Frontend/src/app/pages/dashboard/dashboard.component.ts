@@ -9,10 +9,8 @@ import { StatsOverview } from '../../models/models';
   selector: 'app-dashboard',
   standalone: true,
   imports: [CommonModule, RouterLink, ProgressBarModule],
-  template: `
-  `,
-  styles: [`
-    `],
+  templateUrl: './dashboard.component.html',
+  styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit {
   stats: StatsOverview | null = null;

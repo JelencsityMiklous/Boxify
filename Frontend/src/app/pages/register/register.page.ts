@@ -11,12 +11,8 @@ import { AuthService } from '../../services/auth.service';
 @Component({
   standalone: true,
   imports: [ReactiveFormsModule, CardModule, InputTextModule, PasswordModule, ButtonModule, RouterLink],
-  template: `
-    
-  `,
-  styles: [
-    ``,
-  ],
+  templateUrl: './register.component.html',
+  styleUrls: ['./register.component.scss'],
 })
 export class RegisterPage {
   loading = false;

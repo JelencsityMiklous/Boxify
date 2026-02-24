@@ -10,11 +10,8 @@ import { Item } from '../../models/models';
   selector: 'app-search',
   standalone: true,
   imports: [CommonModule, FormsModule, ButtonModule, RouterLink],
-  template: `
-    
-  `,
-  styles: [`
-   `],
+  templateUrl: './search.component.html', 
+  styleUrls: ['./search.component.scss'],
 })
 export class SearchComponent implements OnInit {
   query = '';

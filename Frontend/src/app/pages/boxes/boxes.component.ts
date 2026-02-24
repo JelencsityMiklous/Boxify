@@ -17,8 +17,8 @@ import { Box, BoxContents } from '../../models/models';
   standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule, ButtonModule, DialogModule, InputTextModule, DropdownModule, ProgressBarModule, TagModule, ToastModule],
   providers: [MessageService],
-  template: ``,
-  styles: [``],
+  templateUrl: './boxes.component.html',
+  styleUrls: ['./boxes.component.scss'],
 })
 export class BoxesComponent implements OnInit {
   boxes: Box[] = [];
