@@ -26,7 +26,9 @@ body {
   color: var(--text);
   min-height: 100vh;
 }
-
+.ng-trigger{
+  padding:15px;
+}
 // ── PrimeNG overrides ────────────────────────────────────────────────────
 .p-component { font-family: var(--font-sans) !important; }
 
@@ -83,7 +85,9 @@ body {
 
 .p-button-outlined { border-color: var(--border) !important; color: var(--text-muted) !important; background: transparent !important; }
 .p-button-danger { background: rgba(255,80,80,0.12) !important; border-color: rgba(255,80,80,0.3) !important; color: #ff6b6b !important; }
-
+.p-button-label{
+  padding:5px;
+}
 .p-datatable {
   .p-datatable-thead > tr > th {
     background: var(--surface) !important;
