@@ -76,7 +76,7 @@ export class StatsService {
   private api = `${environment.apiUrl}`;
   constructor(private http: HttpClient) {}
 
-  overview() { return this.http.get<StatsOverview>(`${this.api}/stats/overview`); }
+  overview() { return this.http.get<StatsOverview>(`${this.api}/dashboard/overview`); }
 
   searchItems(query: string) {
     return this.http.get<Item[]>(`${this.api}/search/items`, {
