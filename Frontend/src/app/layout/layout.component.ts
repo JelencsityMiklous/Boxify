@@ -14,7 +14,6 @@ import { AuthService } from '../services/auth.service';
 export class LayoutComponent {
   searchQuery = '';
   user = this.auth.currentUser;
-
   initials = computed(() => {
     const name = this.user()?.name || '';
     return name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();

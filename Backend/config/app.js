@@ -15,8 +15,11 @@ const uploadDir = process.env.UPLOAD_DIR || path.join(process.cwd(), 'uploads');
 app.use('/uploads', express.static(uploadDir));
 
 // routes
+
+
 app.get('/health', (_req, res) => res.json({ ok: true }));
 
+app.use('/api/users', require('../routes/user.route'));
 app.use('/api/auth', require('../routes/auth.route'));
 app.use('/api/boxes', require('../routes/box.route'));
 app.use('/api/items', require('../routes/item.route'));
