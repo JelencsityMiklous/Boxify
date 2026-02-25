@@ -25,6 +25,7 @@ app.use('/api/boxes', require('../routes/box.route'));
 app.use('/api/items', require('../routes/item.route'));
 app.use('/api/packing', require('../routes/packing.route'));
 app.use('/api/search', require('../routes/search.route'));
+app.use('/api/dashboard', require('../routes/dashboard.route'));
 
 // --- 404
 app.use((_req, res) => res.status(404).json({ error: 'NOT_FOUND' }));
