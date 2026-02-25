@@ -1,5 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './guards/auth.guard';
+import { adminGuard } from './guards/admin.guard';
+import { AdminUsersComponent } from './pages/users-list/admin-users.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -32,6 +34,13 @@ export const routes: Routes = [
         path: 'search',
         loadComponent: () => import('./pages/search/search.component').then(m => m.SearchComponent),
       },
+      {
+      path: 'admin/users',
+      component: AdminUsersComponent,
+      canActivate: [adminGuard],
+      title: 'Felhasználók kezelése'
+},
+      
     ],
   },
   { path: '**', redirectTo: 'dashboard' },

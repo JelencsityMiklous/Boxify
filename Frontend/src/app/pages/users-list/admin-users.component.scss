@@ -1,0 +1,157 @@
+// admin-users.component.scss
+
+.container {
+  padding: 24px;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 24px;
+  letter-spacing: -0.3px;
+}
+
+// Loading / Empty állapotok
+.text-center {
+  text-align: center;
+}
+
+.py-10 {
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
+.text-gray-600,
+.text-gray-500 {
+  color: var(--text-muted);
+}
+
+// Error doboz
+.error {
+  background: rgba(239, 68, 68, 0.1);           // világos piros háttér, projekt-stílusban
+  border: 1px solid var(--border);
+  color: #ef4444;
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+
+  button {
+    background: none;
+    border: none;
+    color: #ef4444;
+    text-decoration: underline;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+
+    &:hover {
+      background: rgba(239, 68, 68, 0.15);
+    }
+  }
+}
+
+// Táblázat
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--surface);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+
+  thead {
+    background: var(--surface2);
+
+    th {
+      text-align: left;
+      padding: 12px 24px;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--border);
+    }
+  }
+
+  tbody {
+    tr {
+      transition: background 0.15s ease;
+
+      &:hover {
+        background: rgba(255,255,255,0.03);      // pontosan a nav-item hover-jához hasonló
+      }
+
+      td {
+        padding: 16px 24px;
+        color: var(--text-muted);
+        font-size: 0.875rem;
+        border-bottom: 1px solid var(--border);
+      }
+
+      &:last-child td {
+        border-bottom: none;
+      }
+    }
+  }
+
+  .role.admin {
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  button {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  button:hover {
+    opacity: 0.92;
+    transform: translateY(-1px);
+  }
+
+  .promote {
+    background: var(--accent);
+    color: #000;                          // ha accent világos, fekete szöveg jobb
+  }
+
+  .demote {
+    background: #f59e0b;
+    color: white;
+  }
+
+  .delete {
+    background: #ef4444;
+    color: white;
+  }
+}
+
+// Mobilbarát scroll (ha szükséges)
+@media (max-width: 768px) {
+  .table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}

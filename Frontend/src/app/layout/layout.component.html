@@ -24,6 +24,16 @@
           <span class="icon">🔍</span> Keresés
         </a>
 
+
+        <ng-container *ngIf="user()?.role === 'admin'">
+    <div class="nav-section-label admin-label">Admin</div>
+
+    <a class="nav-item admin-item" routerLink="/admin/users" routerLinkActive="active">
+      Felhasználók kezelése
+    </a>
+   
+  </ng-container>
+
         <div class="sidebar-bottom">
           <div class="user-card">
             <div class="user-avatar">{{ initials() }}</div>
